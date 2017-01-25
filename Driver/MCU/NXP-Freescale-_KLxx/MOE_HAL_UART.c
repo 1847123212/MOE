@@ -26,8 +26,8 @@ static uint8 sg_au8RcvData[40] = {0};
 static uint8 sg_u8GetTel = MOE_HAL_UART_NO_RCV_TEL;
 
 /******************************************************************************
-* Name       : uint8 uint8 Moe_HAL_UART_Init(void)
-* Function   : Init hardware abstract layer for UART
+* Name       : uint8 Moe_HAL_UART_Cfg(T_MOE_DRV_PARA *ptCfg)
+* Function   : Configure hardware abstract layer for UART
 * Input      : None.
 * Output:    : None.
 * Return     : SW_OK   Successful.
@@ -37,9 +37,8 @@ static uint8 sg_u8GetTel = MOE_HAL_UART_NO_RCV_TEL;
 * Author     : Ian
 * Date       : 19th Jul 2016
 ******************************************************************************/
-uint8 Moe_HAL_UART_Init(void)
+uint8 Moe_HAL_UART_Cfg(T_MOE_DRV_PARA *ptCfg)
 {
-#if (1)
     volatile uint8 u8Data = 0;
     uint16         U16SBR = 0; 
     
@@ -77,20 +76,30 @@ uint8 Moe_HAL_UART_Init(void)
     UART1_C2 |= (UART_C2_TE_MASK | UART_C2_RE_MASK);                //Enasable TX/RX first before UART init 
     
     /*------------Enable TX/RX interrupt after UART init -------*/
-    //UART1_C2 |= UART_C2_RIE_MASK;
-    //NVIC_ISER = 1<<(13);
+    UART1_C2 |= UART_C2_RIE_MASK;
+    NVIC_ISER = 1<<(13);
     /* Enable Error interrupt. */
-    //UART1_C3 |= (UART_C3_PEIE_MASK | UART_C3_FEIE_MASK | UART_C3_NEIE_MASK | UART_C3_ORIE_MASK); 
-#else
-    
-    uart_init (UART1_BASE_PTR, periph_clk_khz, 19200);
-    
-#endif
+    UART1_C3 |= (UART_C3_PEIE_MASK | UART_C3_FEIE_MASK | UART_C3_NEIE_MASK | UART_C3_ORIE_MASK); 
 
     return SW_OK;  
 }
 
-
+/******************************************************************************
+* Name       : uint8 Moe_HAL_UART_Ctrl(T_MOE_DRV_PARA *ptCtrl)
+* Function   : Send control command to UART
+* Input      : None.
+* Output:    : None.
+* Return     : SW_OK   Successful.
+*              SW_ERR  Failed.
+* description: To be done.
+* Version    : V1.00
+* Author     : Ian
+* Date       : 19th Jul 2016
+******************************************************************************/
+uint8 Moe_HAL_UART_Ctrl(T_MOE_DRV_PARA *ptCtrl)
+{
+    reutrn SW_OK;
+}
 
 /******************************************************************************
 * Name       : uint8 Moe_HAL_Uart_Byte_Receive(void)
@@ -231,7 +240,7 @@ void Moe_HAL_Uart_Rx_Int_Enable(void)
 }
 
 /******************************************************************************
-* Name       : vvoid Moe_HAL_Uart_Rx_Int_Disable(void)
+* Name       : void Moe_HAL_Uart_Rx_Int_Disable(void)
 * Function   : Disable uart rx interrupt
 * Input      : None.
 * Output:    : None.
